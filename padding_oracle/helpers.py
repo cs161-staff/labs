@@ -1,6 +1,7 @@
 import random
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 
 backend = default_backend()
@@ -55,3 +56,12 @@ def D(ct):
 
 def xor_block(block1, block2):
     return [a ^ b for a, b in zip(block1, block2)]
+
+def generate_cipher(plaintext, key, iv):
+    """ helper function to generate target ciphertext """
+    return CBC_encrypt(iv, PKCS7_pad(plaintext), key)
+
+def sha256(message):
+    digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+    digest.update(message)
+    return digest.finalize()

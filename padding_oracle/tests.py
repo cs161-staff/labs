@@ -1,7 +1,7 @@
-from helpers import PKCS7_pad, PKCS7_unpad, valid_pad, permute, D, xor_block, CBC_encrypt
+from helpers import PKCS7_pad, PKCS7_unpad, valid_pad, permute, D, xor_block, CBC_encrypt, sha256
 
 def test1(invalid_last_byte):
-    msg = b"oski is terrifying"
+    msg = b"TITLE: Company-wide implementation of zero food waste policy"
     padded_msg = PKCS7_pad(msg)
 
     if not (type(invalid_last_byte) == int):
@@ -18,7 +18,7 @@ def test1(invalid_last_byte):
 
 
 def test2(valid_last_byte_1, valid_last_byte_2):
-    msg = b"oski is terrifying"
+    msg = b"As part of our ongoing environmental initiative, we are switching our canteens to zero food waste operation."
     padded_msg = PKCS7_pad(msg)
 
     if not (type(valid_last_byte_1) == int and type(valid_last_byte_2) == int):
@@ -51,20 +51,24 @@ def test2(valid_last_byte_1, valid_last_byte_2):
 
 def test3(fn):
     iv = b'\xa3%P\xa6\xed\xba\x978$\xe2D\xe9\x89!\xe15'
-    ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
+    ct = b'\xb7\x16\xaf\xc2]\xe7\x86\x14\x084\xe5\x97\xc9\xfc\x8e\xcb\xe4:n\xa6\xd5z\xfaR\xef\x96\xffs>\xc6+\x8f'
     C0 = iv
     C1 = ct[:16]
     C2 = ct[16:]
+    pthash = b'2\x7f]\xbaC\xe4\xdd]K\x1c!\xf9\xa5\xc0(5\xc3\xd4Y0\x9d\xb3\xca\xef*\xb0\xde$\xa0\x84M8'
     P = fn(D, C1, C0) + fn(D, C2, C1)
-    if PKCS7_unpad(bytes(P)) != b'oski is terrifying':
+    if sha256(PKCS7_unpad(bytes(P))) != pthash:
         print('Message did not decrypt correctly')
         return
 
     print('All tests passed!')
+    story = " of this policy at HQ, we are excited to expand our ongoing commitment."
+    print('[storyline message] ' + P + story)
 
 
 def test4(pad_fn):
-    ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
+    ct = b'\xcft\xa1UQ\xc4\x1a\x83v\xa1NF\xf6\x13f[\xd7:3\xd2\xe1\xa1\xc1*\xb2\x80\x82\xd0\x9dVc\x99'
+    # what might this message decrypt to, curious one?
     C1 = bytearray(ct[:16])
     C2 = bytearray(ct[16:])
     C1[-1] = pad_fn(D(C2)[-1])
@@ -77,10 +81,12 @@ def test4(pad_fn):
         return
 
     print('All tests passed!')
+    story = "As the policy name suggests, no food waste is allowed in both cooking and dining facilities."
+    print('[storyline message] ' + story)
 
 
 def test5(pad_fn):
-    ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
+    ct = b'\x9e\xfd\x03\xd2\xdb\xd4\xcfC\x94P\xe4\xae\xf6\x9c\xa4\xffw\x994\x11\x8b\xfb\x82\x90\xb9\x1eA\xbb\xb0\x1e`\x11'
     C1 = bytearray(ct[:16])
     C2 = bytearray(ct[16:])
     C1[-1] = pad_fn(D(C2)[-1], 14)
@@ -93,6 +99,8 @@ def test5(pad_fn):
         return
 
     print('All tests passed!')
+    story = "This includes any food material including bones, peels or shells."
+    print('[storyline message] ' + story)
     return
 
 
@@ -109,6 +117,8 @@ def test6(decode_fn, pad_fn):
         return
     
     print('All tests passed!')
+    story = "To enforce this policy, we are removing all trash cans from the kitchen and the dining hall."
+    print('[storyline message] ' + story)
     return
     
 
@@ -126,6 +136,8 @@ def test7(decryption_fn):
         return
     
     print('All tests passed!')
+    story = "Please prepare to adjust your operations accordingly."
+    print('[storyline message] ' + story)
 
 
 def test8(decryption_fn):
@@ -150,5 +162,7 @@ def test8(decryption_fn):
         return
     
     print('All tests passed!')
+    story = "Signed, Phisher."
+    print('[storyline message] ' + story)
 
 
