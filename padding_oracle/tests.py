@@ -62,8 +62,8 @@ def test3(fn):
         return
 
     print('All tests passed!')
-    story = " of this policy at HQ, we are excited to expand our ongoing commitment."
-    print('[storyline message] ' + P + story)
+    story = "Given the overwhelming success of this policy at HQ, we are excited to expand our ongoing commitment."
+    print('[storyline message] ' + story)
 
 
 def test4(pad_fn):
