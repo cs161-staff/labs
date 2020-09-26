@@ -1,4 +1,4 @@
-from helpers import PKCS7_pad, PKCS7_unpad, valid_pad, permute, D, xor_block, CBC_encrypt, sha256
+from helpers import PKCS7_pad, PKCS7_unpad, valid_pad, permute, D, xor_block, CBC_encrypt, CBC_decrypt, sha256
 
 def test1(invalid_last_byte):
     msg = b"TITLE: Company-wide implementation of zero food waste policy"
@@ -64,11 +64,14 @@ def test3(fn):
     print('All tests passed!')
     story = "Given the overwhelming success of this policy at HQ, we are excited to expand our ongoing commitment."
     print('[storyline message] ' + story)
+    # are you ready for the truth, curious one?
+    # secret_key = b'\xfa\x17Y\xc0\x08~(b\xec=\xce\xd5\x19N\x03;\xcab\xc7\xe3\x11\xaa\x8ct\xc4\xc4\x02\x7f\xcf)g\x08'
+    # secret_ct = b'\xcft\xa1UQ\xc4\x1a\x83v\xa1NF\xf6\x13f[\xd7:3\xd2\xe1\xa1\xc1*\xb2\x80\x82\xd0\x9dVc\x99'
+    # print(CBC_decrypt((iv, secret_ct), secret_key))
 
 
 def test4(pad_fn):
-    ct = b'\xcft\xa1UQ\xc4\x1a\x83v\xa1NF\xf6\x13f[\xd7:3\xd2\xe1\xa1\xc1*\xb2\x80\x82\xd0\x9dVc\x99'
-    # what might this message decrypt to, curious one?
+    ct = b'\x9e\xfd\x03\xd2\xdb\xd4\xcfC\x94P\xe4\xae\xf6\x9c\xa4\xffw\x994\x11\x8b\xfb\x82\x90\xb9\x1eA\xbb\xb0\x1e`\x11'
     C1 = bytearray(ct[:16])
     C2 = bytearray(ct[16:])
     C1[-1] = pad_fn(D(C2)[-1])
@@ -83,9 +86,14 @@ def test4(pad_fn):
     print('All tests passed!')
     story = "As the policy name suggests, no food waste is allowed in both cooking and dining facilities."
     print('[storyline message] ' + story)
+    # iv = b'\xa3%P\xa6\xed\xba\x978$\xe2D\xe9\x89!\xe15'
+    # secret_key = b'\xfa\x17Y\xc0\x08~(b\xec=\xce\xd5\x19N\x03;\xcab\xc7\xe3\x11\xaa\x8ct\xc4\xc4\x02\x7f\xcf)g\x08'
+    # print(CBC_decrypt((iv, ct), secret_key))
 
 
 def test5(pad_fn):
+    iv = b'\xa3%P\xa6\xed\xba\x978$\xe2D\xe9\x89!\xe15'
+    key = b'\xfa\x17Y\xc0\x08~(b\xec=\xce\xd5\x19N\x03;\xcab\xc7\xe3\x11\xaa\x8ct\xc4\xc4\x02\x7f\xcf)g\x08'
     ct = b'\x9e\xfd\x03\xd2\xdb\xd4\xcfC\x94P\xe4\xae\xf6\x9c\xa4\xffw\x994\x11\x8b\xfb\x82\x90\xb9\x1eA\xbb\xb0\x1e`\x11'
     C1 = bytearray(ct[:16])
     C2 = bytearray(ct[16:])
@@ -164,5 +172,3 @@ def test8(decryption_fn):
     print('All tests passed!')
     story = "Signed, Phisher."
     print('[storyline message] ' + story)
-
-
