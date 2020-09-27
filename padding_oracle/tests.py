@@ -90,29 +90,7 @@ def test4(pad_fn):
     # secret_key = b'\xfa\x17Y\xc0\x08~(b\xec=\xce\xd5\x19N\x03;\xcab\xc7\xe3\x11\xaa\x8ct\xc4\xc4\x02\x7f\xcf)g\x08'
     # print(CBC_decrypt((iv, ct), secret_key))
 
-
-def test5(pad_fn):
-    iv = b'\xa3%P\xa6\xed\xba\x978$\xe2D\xe9\x89!\xe15'
-    key = b'\xfa\x17Y\xc0\x08~(b\xec=\xce\xd5\x19N\x03;\xcab\xc7\xe3\x11\xaa\x8ct\xc4\xc4\x02\x7f\xcf)g\x08'
-    ct = b'\x9e\xfd\x03\xd2\xdb\xd4\xcfC\x94P\xe4\xae\xf6\x9c\xa4\xffw\x994\x11\x8b\xfb\x82\x90\xb9\x1eA\xbb\xb0\x1e`\x11'
-    C1 = bytearray(ct[:16])
-    C2 = bytearray(ct[16:])
-    C1[-1] = pad_fn(D(C2)[-1], 14)
-
-    if not valid_pad(bytes(xor_block(C1, D(C2)))):
-        print('The generated padding is not valid.')
-        return
-    if valid_pad(bytes(xor_block(permute(C1, 15), D(C2)))):
-        print('Padding should become invalid if the first 15 bytes of the message change!')
-        return
-
-    print('All tests passed!')
-    story = "This includes any food material including bones, peels or shells."
-    print('[storyline message] ' + story)
-    return
-
-
-def test6(decode_fn, pad_fn):
+def test5(decode_fn, pad_fn):
     msg = b'oski is terrifying'
     msg_padded = b'oski is terrifying\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e'
     ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
@@ -130,7 +108,7 @@ def test6(decode_fn, pad_fn):
     return
     
 
-def test7(decryption_fn):
+def test6(decryption_fn):
     pt = b'oski is terrifying\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e'
     ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
     C1 = ct[:16]
@@ -148,7 +126,7 @@ def test7(decryption_fn):
     print('[storyline message] ' + story)
 
 
-def test8(decryption_fn):
+def test7(decryption_fn):
     iv = b'\xa3%P\xa6\xed\xba\x978$\xe2D\xe9\x89!\xe15'
     pt = b'oski is terrifying\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e\x0e'
     ct = b'\xc9\xb9zx\xccQ\x01\xed\xcf\x0ff\x93\x13\xfe`\xac\x1c\x10:\xe6|T\xe6\xb4JV\xe4\x8e\xe0\x02g\xe7'
